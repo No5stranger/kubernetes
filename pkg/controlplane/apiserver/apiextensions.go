@@ -66,6 +66,7 @@ func CreateAPIExtensionsConfig(
 		apiextensionsapiserver.Scheme); err != nil {
 		return nil, err
 	}
+	//TODO(no5stranger): extensions配置处理CRD
 	apiextensionsConfig := &apiextensionsapiserver.Config{
 		GenericConfig: &server.RecommendedConfig{
 			Config:                genericConfig,

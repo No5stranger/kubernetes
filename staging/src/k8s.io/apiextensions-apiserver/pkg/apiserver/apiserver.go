@@ -123,6 +123,7 @@ func (cfg *Config) Complete() CompletedConfig {
 
 // New returns a new instance of CustomResourceDefinitions from the given config.
 func (c completedConfig) New(delegationTarget genericapiserver.DelegationTarget) (*CustomResourceDefinitions, error) {
+	//TODO(no5stranger): 先构建genericServer
 	genericServer, err := c.GenericConfig.New("apiextensions-apiserver", delegationTarget)
 	if err != nil {
 		return nil, err
@@ -155,10 +156,13 @@ func (c completedConfig) New(delegationTarget genericapiserver.DelegationTarget)
 		apiGroupInfo.VersionedResourcesStorageMap[v1.SchemeGroupVersion.Version] = storage
 	}
 
+	//TODO(no5stranger): 注册extensions路由
 	if err := s.GenericAPIServer.InstallAPIGroup(&apiGroupInfo); err != nil {
 		return nil, err
 	}
 
+	//TODO(no5stranger): 使用lookback创建k8s，用于构建informers
+	//TODO(no5stranger): 为什么单独的informer?
 	crdClient, err := clientset.NewForConfig(s.GenericAPIServer.LoopbackClientConfig)
 	if err != nil {
 		// it's really bad that this is leaking here, but until we can fix the test (which I'm pretty sure isn't even testing what it wants to test),
@@ -223,6 +227,7 @@ func (c completedConfig) New(delegationTarget genericapiserver.DelegationTarget)
 		s.Informers.Start(context.Done())
 		return nil
 	})
+	//TODO(no5stranger): start controller，处理CRD
 	s.GenericAPIServer.AddPostStartHookOrDie("start-apiextensions-controllers", func(context genericapiserver.PostStartHookContext) error {
 		// OpenAPIVersionedService and StaticOpenAPISpec are populated in generic apiserver PrepareRun().
 		// Together they serve the /openapi/v2 endpoint on a generic apiserver. A generic apiserver may

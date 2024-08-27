@@ -149,6 +149,7 @@ func BuildGenericConfig(
 		}
 		return obj, nil
 	}
+	//TODO(no5stranger): 初始化informers
 	versionedInformers = clientgoinformers.NewSharedInformerFactoryWithOptions(clientgoExternalClient, 10*time.Minute, clientgoinformers.WithTransform(trim))
 
 	if lastErr = s.Features.ApplyTo(genericConfig, clientgoExternalClient, versionedInformers); lastErr != nil {
@@ -187,6 +188,7 @@ func BuildGenericConfig(
 		s.Etcd.StorageConfig.Transport.TracerProvider = noopoteltrace.NewTracerProvider()
 	}
 
+	//TODO(no5stranger): 初始化storageFactory
 	storageFactoryConfig := kubeapiserver.NewStorageFactoryConfig()
 	storageFactoryConfig.CurrentVersion = genericConfig.EffectiveVersion
 	storageFactoryConfig.APIResourceConfig = genericConfig.MergedResourceConfig
@@ -198,6 +200,7 @@ func BuildGenericConfig(
 	// storageFactory.StorageConfig is copied from etcdOptions.StorageConfig,
 	// the StorageObjectCountTracker is still nil. Here we copy from genericConfig.
 	storageFactory.StorageConfig.StorageObjectCountTracker = genericConfig.StorageObjectCountTracker
+	//TODO(no5stranger): apply storageFactory到genericConfig的RestOption，后续所有RestStorage将通过CompleteWithOptions将options注入到每个storage
 	if lastErr = s.Etcd.ApplyWithStorageFactoryTo(storageFactory, genericConfig); lastErr != nil {
 		return
 	}

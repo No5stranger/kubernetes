@@ -783,6 +783,7 @@ func (c completedConfig) New(name string, delegationTarget DelegationTarget) (*G
 		debugSocket = routes.NewDebugSocket(c.DebugSocketPath)
 	}
 
+	//TODO(no5stranger): 初始化handler, 所有router请求最终会归结到handler处理
 	apiServerHandler := NewAPIServerHandler(name, c.Serializer, handlerChainBuilder, delegationTarget.UnprotectedHandler())
 
 	s := &GenericAPIServer{

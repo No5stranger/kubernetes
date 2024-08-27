@@ -325,11 +325,13 @@ func (c CompletedConfig) New(delegationTarget genericapiserver.DelegationTarget)
 		return nil, err
 	}
 
+	//TODO(no5stranger): 构建cores/flewcontrol等内部resource storage
 	restStorageProviders, err := c.StorageProviders(client.Discovery())
 	if err != nil {
 		return nil, err
 	}
 
+	//TODO(no5stranger): 注册apis
 	if err := s.ControlPlane.InstallAPIs(restStorageProviders...); err != nil {
 		return nil, err
 	}
@@ -338,6 +340,7 @@ func (c CompletedConfig) New(delegationTarget genericapiserver.DelegationTarget)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get listener address: %w", err)
 	}
+	//TODO(no5stranger): kubernetes service controller创建kubernetes service
 	kubernetesServiceCtrl := kubernetesservice.New(kubernetesservice.Config{
 		PublicIP: c.ControlPlane.Generic.PublicAddress,
 

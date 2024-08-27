@@ -434,7 +434,9 @@ func (s *GenericAPIServer) PrepareRun() preparedGenericAPIServer {
 		}.InstallV3(s.Handler.GoRestfulContainer, s.Handler.NonGoRestfulMux)
 	}
 
+	//TODO(no5stranger): 注册install /healthz
 	s.installHealthz()
+	//TODO(no5stranger): 注册install /livez
 	s.installLivez()
 
 	// as soon as shutdown is initiated, readiness should start failing
@@ -586,6 +588,7 @@ func (s preparedGenericAPIServer) RunWithContext(ctx context.Context) error {
 		}
 	}
 
+	//TODO(no5stranger): 监听端口启动server
 	stoppedCh, listenerStoppedCh, err := s.NonBlockingRunWithContext(stopHTTPServerCtx, shutdownTimeout)
 	if err != nil {
 		return err
@@ -731,6 +734,7 @@ func (s preparedGenericAPIServer) NonBlockingRunWithContext(ctx context.Context,
 	internalStopCh := make(chan struct{})
 	var stoppedCh <-chan struct{}
 	var listenerStoppedCh <-chan struct{}
+	//TODO(no5stranger): 需在https模式下运行，且handler已经注册，handler为APIServerHandler
 	if s.SecureServingInfo != nil && s.Handler != nil {
 		var err error
 		stoppedCh, listenerStoppedCh, err = s.SecureServingInfo.Serve(s.Handler, shutdownTimeout, internalStopCh)
@@ -750,6 +754,7 @@ func (s preparedGenericAPIServer) NonBlockingRunWithContext(ctx context.Context,
 
 	s.RunPostStartHooks(ctx)
 
+	//TODO(no5stranger): notify systemd READY
 	if _, err := systemd.SdNotify(true, "READY=1\n"); err != nil {
 		klog.Errorf("Unable to send systemd daemon successful start message: %v\n", err)
 	}
@@ -776,6 +781,7 @@ func (s *GenericAPIServer) installAPIResources(apiPrefix string, apiGroupInfo *A
 		apiGroupVersion.TypeConverter = typeConverter
 		apiGroupVersion.MaxRequestBodyBytes = s.maxRequestBodyBytes
 
+		//TODO(no5stranger): 注册restfulhandler, 底层最终会调用storage API
 		discoveryAPIResources, r, err := apiGroupVersion.InstallREST(s.Handler.GoRestfulContainer)
 
 		if err != nil {

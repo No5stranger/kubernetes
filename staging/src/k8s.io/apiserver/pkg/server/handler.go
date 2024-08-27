@@ -76,6 +76,7 @@ func NewAPIServerHandler(name string, s runtime.NegotiatedSerializer, handlerCha
 		nonGoRestfulMux.NotFoundHandler(notFoundHandler)
 	}
 
+	//TODO(no5stranger): 使用go-restful封装router注册
 	gorestfulContainer := restful.NewContainer()
 	gorestfulContainer.ServeMux = http.NewServeMux()
 	gorestfulContainer.Router(restful.CurlyRouter{}) // e.g. for proxy/{kind}/{name}/{*}

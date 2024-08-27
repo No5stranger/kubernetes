@@ -82,6 +82,7 @@ func (opts *ServerRunOptions) Complete() (CompletedOptions, error) {
 		for resource, size := range userSpecified {
 			sizes[resource] = size
 		}
+		//TODO(no5stranger): set Etcd watch cache size
 		completed.Etcd.WatchCacheSizes, err = apiserveroptions.WriteWatchCacheSizes(sizes)
 		if err != nil {
 			return CompletedOptions{}, err

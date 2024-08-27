@@ -204,6 +204,7 @@ func (a *APIInstaller) Install() ([]metav1.APIResource, []*storageversion.Resour
 	}
 	sort.Strings(paths)
 	for _, path := range paths {
+		//TODO(no5stranger): 注册路由,为每个http method注册handler
 		apiResource, resourceInfo, err := a.registerResourceHandlers(path, a.group.Storage[path], ws)
 		if err != nil {
 			errors = append(errors, fmt.Errorf("error in registering resource: %s, %v", path, err))
@@ -281,6 +282,7 @@ func GetResourceKind(groupVersion schema.GroupVersion, storage rest.Storage, typ
 	return fqKindToRegister, nil
 }
 
+// TODO(no5stranger): 注册GET/LIST/POST/PUT/DELETE/WATCH所有可涉及的router, handler封装storage的操作
 func (a *APIInstaller) registerResourceHandlers(path string, storage rest.Storage, ws *restful.WebService) (*metav1.APIResource, *storageversion.ResourceInfo, error) {
 	admit := a.group.Admit
 

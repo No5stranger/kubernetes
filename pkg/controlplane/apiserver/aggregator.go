@@ -136,6 +136,7 @@ func CreateAggregatorServer(aggregatorConfig aggregatorapiserver.CompletedConfig
 	if err != nil {
 		return nil, err
 	}
+	//TODO(no5stranger): AutoRegisterController处理APIServer的resource
 	autoRegistrationController := autoregister.NewAutoRegisterController(aggregatorServer.APIRegistrationInformers.Apiregistration().V1().APIServices(), apiRegistrationClient)
 	apiServices := apiServicesToRegister(delegateAPIServer, autoRegistrationController, apiVersionPriorities)
 

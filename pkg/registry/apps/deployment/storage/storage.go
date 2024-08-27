@@ -105,6 +105,7 @@ func NewREST(optsGetter generic.RESTOptionsGetter) (*REST, *StatusREST, *Rollbac
 		TableConvertor: printerstorage.TableConvertor{TableGenerator: printers.NewTableGenerator().With(printersinternal.AddHandlers)},
 	}
 	options := &generic.StoreOptions{RESTOptions: optsGetter}
+	//TODO(no5stranger): 初始化所有storage相关的配置
 	if err := store.CompleteWithOptions(options); err != nil {
 		return nil, nil, nil, err
 	}

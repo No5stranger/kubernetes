@@ -76,6 +76,7 @@ func NewConfig(opts options.CompletedOptions) (*Config, error) {
 		Options: opts,
 	}
 
+	//TODO(no5stranger): 构建generic config同时初始化informer/storageFactory
 	genericConfig, versionedInformers, storageFactory, err := controlplaneapiserver.BuildGenericConfig(
 		opts.CompletedOptions,
 		[]*runtime.Scheme{legacyscheme.Scheme, apiextensionsapiserver.Scheme, aggregatorscheme.Scheme},
@@ -85,6 +86,8 @@ func NewConfig(opts options.CompletedOptions) (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	//TODO(no5stranger):  kube-apis ->  extensions -> aggregator
 
 	kubeAPIs, serviceResolver, pluginInitializer, err := CreateKubeAPIServerConfig(opts, genericConfig, versionedInformers, storageFactory)
 	if err != nil {

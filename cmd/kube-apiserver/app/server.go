@@ -143,14 +143,18 @@ func Run(ctx context.Context, opts options.CompletedOptions) error {
 
 	klog.InfoS("Golang settings", "GOGC", os.Getenv("GOGC"), "GOMAXPROCS", os.Getenv("GOMAXPROCS"), "GOTRACEBACK", os.Getenv("GOTRACEBACK"))
 
+	//TODO(no5stranger): 初始化config
 	config, err := NewConfig(opts)
 	if err != nil {
 		return err
 	}
+	//TODO(no5stranger): complete分别对kubeAPIs/extensions/aggregator配置complete
+	//TODO(no5stranger): complete对config补充完整，比如确定一些default值
 	completed, err := config.Complete()
 	if err != nil {
 		return err
 	}
+	//TODO(no5stranger): 构建server
 	server, err := CreateServerChain(completed)
 	if err != nil {
 		return err
@@ -166,13 +170,17 @@ func Run(ctx context.Context, opts options.CompletedOptions) error {
 
 // CreateServerChain creates the apiservers connected via delegation.
 func CreateServerChain(config CompletedConfig) (*aggregatorapiserver.APIAggregator, error) {
+	//TODO(no5stranger): config充当context的作用
+	//TODO(no5stranger): notfoundhandler封装巧思
 	notFoundHandler := notfoundhandler.New(config.KubeAPIs.ControlPlane.Generic.Serializer, genericapifilters.NoMuxAndDiscoveryIncompleteKey)
+	//TODO(no5stranger): New做了lot of初始化必要工作
 	apiExtensionsServer, err := config.ApiExtensions.New(genericapiserver.NewEmptyDelegateWithCustomHandler(notFoundHandler))
 	if err != nil {
 		return nil, err
 	}
 	crdAPIEnabled := config.ApiExtensions.GenericConfig.MergedResourceConfig.ResourceEnabled(apiextensionsv1.SchemeGroupVersion.WithResource("customresourcedefinitions"))
 
+	//TODO(no5stranger): extensionServer下包含GenericAPIServer
 	kubeAPIServer, err := config.KubeAPIs.New(apiExtensionsServer.GenericAPIServer)
 	if err != nil {
 		return nil, err
